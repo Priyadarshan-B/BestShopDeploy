@@ -76,7 +76,9 @@ label {
 
 .flex-container {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 .field-inside-flex {
@@ -108,43 +110,43 @@ label {
   border-radius: 5px;
   font-size: large;
   font-weight: 500;
-  color: rgb(86, 86, 86);
-
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
 .last {
   display: flex;
-  margin-top: 20px;
   flex: 13;
   flex-wrap: wrap;
   gap: 15px;
 }
 
 .count-size-quantity-box {
-  height: 260px;
   width: 60%;
+  height: 84%;
   padding: 0px 20px 20px 20px;
-  overflow-y: scroll;
-  box-shadow: 0px 1px 3px;
-  border-radius: 7px;
+  overflow-y: hidden;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;  border-radius: 7px;
   border: 10px solid white;
 }
 
 .price-boxes {
-  height: 260px;
   width: 60%;
-  padding: 0px 20px 20px 20px;
+  height: 84%;
   overflow-y: hidden;
-  box-shadow: 0px 1px 3px;
-  border-radius: 7px;
+  padding: 0px 20px 20px 20px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;    border-radius: 7px;
   border: 10px solid white;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.size-and-quantity{
+  height: 25vh;
+  overflow-y: scroll;
+}
 .centering {
-  width: 99%;
+  padding-top: 10px;
 }
 
 /* For WebKit browsers (Chrome, Safari) */
@@ -252,13 +254,6 @@ label {
     overflow-y: scroll;
   }
 
-  .input_box {
-    width: 96%;
-  }
-
-  .centering {
-    margin-top: 60px;
-  }
 
 }
 
@@ -272,7 +267,9 @@ label {
   }
 
   .centering {
-    margin: -2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .price-boxes,
@@ -404,47 +401,64 @@ label {
 
 }
 
+.search-label{
+  margin: 10px;
+}
+
+.search-container{
+  margin: 20px;
+  display: flex;
+  align-items: center;
+}
+
 .card-container {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .card {
   background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin: 10px;
     display: flex;
-    cursor: pointer;
     flex-wrap: wrap;
     align-content: center;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
+    
+    
 }
 
 .item-card,
 .sub-category-card,
 .brand-card {
   margin: 10px 0;
-  min-width: 200px;
-    min-height: 80px;
+  min-width: 250px;
+    min-height: 100px;
   padding: 10px;
   border-radius: 8px;
-  background-color: #f3f3f3;
+  background-color: #ffffff;
   cursor: pointer;
   display: flex;
     flex-wrap: wrap;
     align-content: center;
     justify-content: center;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    align-items: center;
+
 }
 
+.selected-info{
+  display: flex;
+}
 .item-card img,
 .brand-card img {
-  width: 50px; /* Adjust image size as needed */
-  height: 50px; /* Adjust image size as needed */
+  width: 100px;
+  height: 90px;
   margin-left: 10px;
+  border-radius: 5px;
 }
 
 .input_box-1{
@@ -455,4 +469,93 @@ label {
     border-radius: 5px;
     box-shadow:0px 4px 6px rgba(0, 0, 0, 0.1) ;
 
+}
+
+.category-info{
+  display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.selected-info{
+  padding: 10px;
+  align-items: center;
+  margin-left: 10px;
+  border-radius: 5px;
+  display: flex;
+  gap: 20px;
+}
+.selected-info p{
+  padding: 20px;
+}
+.selected-info img{
+  border-radius: 5px;
+  max-width: 120px;
+  max-height: 100px;
+}
+
+.name-and-icon{
+  display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5px ;
+}
+.add-icon{
+  cursor: pointer;
+}
+
+
+.add-button-dialog{
+  border: none;
+  padding: 3px 10px;
+  background-color: rgba(255, 255, 255, 0.267);
+  color: rgb(36, 88, 202);
+  font-weight: 500;
+  border-radius: 3px;
+  font-size: 18px;
+  margin: 5px;
+  transition: all 0.4s;
+}
+
+.add-button-dialog:hover{
+  background-color: #45b5ed59;
+}
+
+.float-right{
+  float: right;
+}
+
+
+input {
+  margin: 5px;
+}
+
+input::file-selector-button {
+  font-weight: bold;
+  color: white;
+  padding: 7px 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4A55A2;
+}
+
+input::file-selector-button:hover{
+ background-color: #4a54a2dc;
+}
+
+.form-dialog{
+  display: flex;
+  justify-content: space-around;
+}
+
+.dialog-content{
+  width: 80%;
+}
+
+@media (max-width: 650px){
+  .dialog-content{
+    width: 100%;
+  }
 }
