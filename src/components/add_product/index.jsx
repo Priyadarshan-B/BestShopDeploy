@@ -11,10 +11,14 @@ import "react-toastify/dist/ReactToastify.css";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import Cookies from "js-cookie";
 import InputBox from "../InputBox/inputbox";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
+import SearchSharpIcon from "@mui/icons-material/SearchSharp";
 
 function AddStocks({ text }) {
+  const username = Cookies.get("username").toUpperCase();
+
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedItemName, setSelectedItemName] = useState(null);
@@ -30,6 +34,12 @@ function AddStocks({ text }) {
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [sizeQuantities, setSizeQuantities] = useState({});
+
+  const [showCategories, setShowCategories] = useState(true);
+  const [showItemNames, setShowItemNames] = useState(false);
+  const [showSubCategories, setShowSubCategories] = useState(false);
+  const [showBrands, setShowBrands] = useState(false);
+  const [showModels, setShowModels] = useState(false);
 
   const notifySuccess = (message) => {
     toast.success(message, { position: toast.POSITION.BOTTOM_LEFT });
@@ -93,18 +103,20 @@ function AddStocks({ text }) {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+        notifySuccess("Category Added Successfull");
+        fetchCategories();
+        setCategoryOpen(false);
+      } else {
+        // notifyError("Category Failed Added");
+        setCategoryOpen(false);
       }
-
-      const data = await response.json();
-      console.log("Success:", data);
-      notifySuccess("Category Added Successfull");
-      fetchCategories();
-      setCategoryOpen(false);
     } catch (error) {
       console.error("Error:", error);
       notifyError("Category Failed Added");
+      setCategoryOpen(false);
     }
   };
 
@@ -132,14 +144,15 @@ function AddStocks({ text }) {
         method: "POST",
         body: formData,
       });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+        fetchItemNames(selectedCategory.id);
+        notifySuccess("Item-Name Added Successfull");
+        setItemOpen(false);
+      } else {
+        setItemOpen(false);
       }
-      const data = await response.json();
-      console.log("Success:", data);
-      fetchItemNames(selectedCategory.id);
-      notifySuccess("Item-Name Added Successfull");
-      setItemOpen(false);
     } catch (error) {
       console.error("Error:", error);
       notifyError("Item-Name Failed to Add");
@@ -172,15 +185,13 @@ function AddStocks({ text }) {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+        fetchSubCategories(selectedItemName.id);
+        notifySuccess("Sub-Category Addded Successfull");
+        setSubOpen(false);
       }
-
-      const data = await response.json();
-      console.log("Success:", data);
-      fetchSubCategories(selectedItemName.id);
-      notifySuccess("Sub-Category Addded Successfull");
-      setSubOpen(false);
     } catch (error) {
       console.error("Error:", error);
       notifyError("Sub-Category Failed to Add");
@@ -210,14 +221,13 @@ function AddStocks({ text }) {
         method: "POST",
         body: formData,
       });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      console.log("Success:", data);
-      fetchBrands(selectedSubCategory.id);
-      notifySuccess("Brand Added Successfull");
-      setBrandOpen(false);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+        fetchBrands(selectedSubCategory.id);
+        notifySuccess("Brand Added Successfull");
+        setBrandOpen(false);      }
+     
     } catch (error) {
       console.error("Error:", error);
       notifyError("Brand Failed to Add");
@@ -258,8 +268,9 @@ function AddStocks({ text }) {
         fetchModels(selectedBrand.id);
         notifySuccess("Model Added Successfull");
       } else {
+        setModelOpen(false); 
         console.error("Error adding Model:", response.error);
-        notifyError("Model Failed to Add");
+        // notifyError("Model Failed to Add");
       }
     } catch (error) {
       console.error("Error adding Model:", error);
@@ -303,7 +314,8 @@ function AddStocks({ text }) {
         notifySuccess("Color Added Successfull");
       } else {
         console.error("Error adding Color:", response.error);
-        notifyError("Color Failed to Add");
+        // notifyError("Color Failed to Add");
+        setColorOpen(false);
       }
     } catch (error) {
       console.error("Error adding Color:", error);
@@ -346,7 +358,7 @@ function AddStocks({ text }) {
         notifySuccess("Size Added Successfull");
         setSizeOpen(false);
       } else {
-        notifyError("Size Failed to Add");
+        // notifyError("Size Failed to Add");
         console.error("Error adding Size:", response.error);
       }
     } catch (error) {
@@ -379,6 +391,8 @@ function AddStocks({ text }) {
 
   const handleSelectCategory = async (category) => {
     setSelectedCategory(category);
+    setShowCategories(false);
+    setShowItemNames(true);
     setSelectedItemName(null);
     setSelectedSubCategory(null);
     setSelectedBrand(null);
@@ -390,18 +404,24 @@ function AddStocks({ text }) {
     setSelectedSubCategory(null);
     setSelectedBrand(null);
     fetchSubCategories(itemName.id);
+    setShowItemNames(false);
+    setShowSubCategories(true);
   };
 
   const handleSelectSubCategory = async (subCategory) => {
     setSelectedSubCategory(subCategory);
     setSelectedBrand(null);
     fetchBrands(subCategory.id);
+    setShowSubCategories(false);
+    setShowBrands(true);
   };
 
   const handleSelectBrand = (brand) => {
     setSelectedBrand(brand);
     setSelectedModel(null); // Reset selected model when brand changes
     fetchModels(brand.id);
+    setShowBrands(false);
+    setShowModels(true);
   };
 
   const handleSelectedModel = (model) => {
@@ -463,16 +483,16 @@ function AddStocks({ text }) {
   const resetSizeQuantities = () => {
     const initialQuantity = {};
     sizes.forEach((size) => {
-       initialQuantity[size.id] = ""; 
+      initialQuantity[size.id] = "";
     });
     setSizeQuantities(initialQuantity);
-   };
+  };
   // refresh data.
   const handleRefresh = () => {
     setSellingPrice("");
     setMrp("");
     setBill("");
-    resetSizeQuantities(); 
+    resetSizeQuantities();
     setSelectedModel(null);
     setSelectedColor(null);
   };
@@ -486,6 +506,7 @@ function AddStocks({ text }) {
     );
 
     const data = {
+      user: username,
       bill_number: parseInt(bill),
       category: selectedCategory.id,
       item_name: selectedItemName.id,
@@ -633,11 +654,25 @@ function AddStocks({ text }) {
           type="number"
           value={sizeQuantities[size.id]}
           onChange={(e) => handleSizeQuantity(size.id, e.target.value)}
+          size="small"
         />
       </div>
     ));
   };
 
+  const handleBack = () => {
+    if (showBrands) {
+      setShowBrands(false);
+      setShowSubCategories(true);
+    } else if (showSubCategories) {
+      setShowSubCategories(false);
+      setShowItemNames(true);
+    } else if (showItemNames) {
+      setShowItemNames(false);
+      setShowCategories(true);
+    }
+    // Add more conditions as needed for other sections
+  };
   return (
     <div className="dashboard-container">
       <Navbar />
@@ -647,7 +682,7 @@ function AddStocks({ text }) {
         <div className="dashboard-body">
           <div className="category-page">
             <div className="select-category-card">
-              {selectedCategory ? null : <h2>Select a Category</h2>}
+              {selectedCategory ? null : <h2>No Items Selected</h2>}
               <div className="selected-info">
                 {selectedCategory &&
                   (selectedCategory.image_path !== "" ? (
@@ -690,15 +725,23 @@ function AddStocks({ text }) {
 
             <div className="search-and-product-type-grid">
               <div className="search-container">
-                <h3 className="search-label">Search:</h3>
-                <input
-                  className="input_box"
+                <InputBox
+                  // className="input_box"
+                  label={
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <SearchSharpIcon sx={{ marginRight: 1 }} />
+                      Search
+                    </div>
+                  }
+                  size="small"
                   type="text"
-                  placeholder="Search..."
                   value={searchQuery}
                   onChange={handleSearchInputChange}
+                  sx={{ width: "100%" }}
+                  // helperText="(Categories,Item name,Sub-Categories and Brand)"
                 />
               </div>
+
               {isLoading && <p>Loading categories...</p>}
               {!isLoading && (
                 <div className="card-container">
@@ -740,6 +783,14 @@ function AddStocks({ text }) {
                   {selectedCategory && selectedItemName === null && (
                     <div className="card1">
                       <div className="name-and-icon">
+                        <button
+                          onClick={() => {
+                            setSelectedCategory(null); // Reset to categories
+                            setSelectedItemName(null); // Reset item name selection
+                          }}
+                        >
+                          Back
+                        </button>
                         <h2>
                           <center>Item Name</center>
                         </h2>
@@ -748,7 +799,6 @@ function AddStocks({ text }) {
                           onClick={handleItemOpen}
                         />
                       </div>
-
                       <div className="card">
                         {filterData(itemNames).map((itemName) => (
                           <div
@@ -773,6 +823,14 @@ function AddStocks({ text }) {
                   {selectedItemName && selectedSubCategory === null && (
                     <div className="card1">
                       <div className="name-and-icon">
+                        <button
+                          onClick={() => {
+                            setSelectedItemName(null); // Reset to item names
+                            setSelectedSubCategory(null); // Reset sub-category selection
+                          }}
+                        >
+                          Back
+                        </button>
                         <h2>
                           <center>Select a Sub-Category</center>
                         </h2>
@@ -789,10 +847,12 @@ function AddStocks({ text }) {
                             className="item-card"
                           >
                             {subCategory.name}
-                            <img
-                              src={`${apiHost}/` + subCategory.image_path}
-                              alt={subCategory.name}
-                            />
+                            {subCategory.image_path && (
+                              <img
+                                src={`${apiHost}/` + subCategory.image_path}
+                                alt={subCategory.name}
+                              />
+                            )}
                           </div>
                         ))}
                       </div>
@@ -803,6 +863,14 @@ function AddStocks({ text }) {
                   {selectedSubCategory && selectedBrand === null && (
                     <div className="card1">
                       <div className="name-and-icon">
+                        <button
+                          onClick={() => {
+                            setSelectedSubCategory(null); // Reset to sub-categories
+                            setSelectedBrand(null); // Reset brand selection
+                          }}
+                        >
+                          Back
+                        </button>
                         <h2>
                           <center>Select a Brand</center>
                         </h2>
@@ -838,6 +906,19 @@ function AddStocks({ text }) {
                           <div className="count-div">
                             <div className="count_lable">
                               <div className="name-and-icon">
+                                <button
+                                  onClick={() => {
+                                    setSelectedBrand(null);
+                                    setSelectedModel(null);
+                                    setSelectedColor(null);
+                                    setSellingPrice("");
+                                    setMrp("");
+                                    setBill("");
+                                    resetSizeQuantities();
+                                  }}
+                                >
+                                  Back
+                                </button>
                                 <b>Select a Model</b>
                                 <AddCircleOutlinedIcon
                                   onClick={handleModelOpen}
@@ -850,6 +931,7 @@ function AddStocks({ text }) {
                                   handleSelectedModel(selectedOption);
                                 }}
                                 value={selectedModel}
+                                placeholder="Select Model"
                               />
                             </div>
 
@@ -867,6 +949,7 @@ function AddStocks({ text }) {
                                   handleSelectedColor(selectedColorOp);
                                 }}
                                 value={selectedColor}
+                                placeholder="Select Color"
                               />
                             </div>
                           </div>
@@ -886,52 +969,57 @@ function AddStocks({ text }) {
                         <div className="price-boxes">
                           <div className="centering">
                             <div className="input-container">
-                              <label htmlFor="selling_price">Bill:</label>
-                              <input
-                                placeholder="Enter Bill No.."
+                              {/* <label htmlFor="selling_price">Bill:</label> */}
+                              <InputBox
+                                label="S.No"
                                 className="input_box"
                                 type="number"
                                 id="bill"
                                 value={bill}
+                                size="small"
+                                sx={{ width: "100%" }}
                                 onChange={(e) => setBill(e.target.value)}
-                                required
                               />
                             </div>
                             <div className="input-container">
-                              <label htmlFor="selling_price">
-                                Selling Price:
-                              </label>
-                              <input
-                                placeholder="Enter Selling Price"
+                              <InputBox
+                                label="Selling Price"
                                 className="input_box"
-                                type="text"
+                                type="number"
                                 id="sellingprice"
+                                size="small"
                                 value={sellingprice}
+                                sx={{ width: "100%" }}
                                 onChange={handleSellingPriceChange}
                                 required
                               />
                             </div>
                             <div className="input-container">
-                              <label htmlFor="mrp">MRP:</label>
-                              <input
-                                placeholder="Enter MRP"
+                              {/* <label htmlFor="mrp">MRP:</label> */}
+                              <InputBox
+                                // placeholder="Enter MRP"
+                                label="MRP"
                                 className="input_box"
-                                type="text"
+                                type="number"
                                 id="mrp"
                                 value={mrp}
                                 required
+                                sx={{ width: "100%" }}
                                 onChange={handleMrpPriceChange}
+                                size="small"
                               />
                             </div>
                             <div className="input-container">
-                              <label htmlFor="price">Purchasing Price:</label>
-                              <input
-                                placeholder="Enter Purchasing Price"
+                              {/* <label htmlFor="price">Purchasing Price:</label> */}
+                              <InputBox
+                                // placeholder="Enter Purchasing Price"
+                                label="Purchase Price "
                                 className="input_box"
-                                type="text"
+                                type="number"
                                 id="purchaseprice"
+                                size="small"
                                 value={purchaseprice}
-                                required
+                                sx={{ width: "100%" }}
                                 onChange={(e) =>
                                   handleNumberChange(e, setPurchasePrice)
                                 }
@@ -1003,6 +1091,7 @@ function AddStocks({ text }) {
                   value={categoryvalue}
                   onChange={(e) => setCategoryValue(e.target.value)}
                   required
+                  sx={{ width: "100%" }}
                   size="small"
                 />
                 <br />
@@ -1011,6 +1100,14 @@ function AddStocks({ text }) {
                   id="image"
                   name="image"
                   accept="image/*"
+                  onChange={handleCategoryImage}
+                />
+                <input
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
+                  capture="environment"
                   onChange={handleCategoryImage}
                 />
                 <br />
@@ -1066,6 +1163,7 @@ function AddStocks({ text }) {
                   value={itemvalue}
                   onChange={(e) => setItemValue(e.target.value)}
                   required
+                  sx={{ width: "100%" }}
                   size="small"
                 />
                 <br />
@@ -1074,6 +1172,14 @@ function AddStocks({ text }) {
                   id="image"
                   name="image"
                   accept="image/*"
+                  onChange={handleItemImage}
+                />
+                <input
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
+                  capture="environment"
                   onChange={handleItemImage}
                 />
                 <br />
@@ -1128,6 +1234,7 @@ function AddStocks({ text }) {
                   value={subvalue}
                   onChange={(e) => setSubValue(e.target.value)}
                   required
+                  sx={{ width: "100%" }}
                   size="small"
                 />
                 <br />
@@ -1136,6 +1243,14 @@ function AddStocks({ text }) {
                   id="image"
                   name="image"
                   accept="image/*"
+                  onChange={handleSubImage}
+                />
+                <input
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
+                  capture="environment"
                   onChange={handleSubImage}
                 />
                 <br />
@@ -1190,6 +1305,7 @@ function AddStocks({ text }) {
                   value={brandvalue}
                   onChange={(e) => setBrandValue(e.target.value)}
                   required
+                  sx={{ width: "100%" }}
                   size="small"
                 />
                 <br />
@@ -1198,6 +1314,14 @@ function AddStocks({ text }) {
                   id="image"
                   name="image"
                   accept="image/*"
+                  onChange={handleBrandImage}
+                />
+                <input
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
+                  capture="environment"
                   onChange={handleBrandImage}
                 />
                 <br />
@@ -1252,6 +1376,7 @@ function AddStocks({ text }) {
                   value={modelvalue}
                   onChange={(e) => setModelValue(e.target.value)}
                   required
+                  sx={{ width: "100%" }}
                   size="small"
                 />
                 <div className="float-right">
@@ -1305,6 +1430,7 @@ function AddStocks({ text }) {
                   value={colorvalue}
                   onChange={(e) => setColorValue(e.target.value)}
                   required
+                  sx={{ width: "100%" }}
                   size="small"
                 />
                 <div className="float-right">
@@ -1358,6 +1484,7 @@ function AddStocks({ text }) {
                   value={sizevalue}
                   onChange={(e) => setSizeValue(e.target.value)}
                   required
+                  sx={{ width: "100%" }}
                   size="small"
                 />
                 <div className="float-right">

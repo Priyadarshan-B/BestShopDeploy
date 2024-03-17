@@ -12,7 +12,8 @@ const CssTextField = styled(TextField)({
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "#E0E3E7",
+      borderColor: "#000000",
+      border: "2px solid #6F7E8C",
     },
     "&:hover fieldset": {
       borderColor: "#B2BAC2",
@@ -23,7 +24,17 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const InputBox = ({ label, onChange, type, min, value, id, size }) => {
+const InputBox = ({
+  label,
+  onChange,
+  type,
+  min,
+  value,
+  id,
+  size,
+  helperText,
+  sx
+}) => {
   return (
     <Box
       component="form"
@@ -41,7 +52,9 @@ const InputBox = ({ label, onChange, type, min, value, id, size }) => {
         onChange={onChange}
         id={id}
         size={size}
-        sx={{ width: "100%" }}
+        helperText={helperText}
+        // sx={{ width: "100%" }}
+        sx={sx}
       />
     </Box>
   );
