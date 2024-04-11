@@ -1,139 +1,80 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
-import '../Dashboard/dashboard.css';
+import Select from "react-select";
+import requestApi from "../../utils/axios";
 import HorizontalNavbar from "../Horizontal_Navbar/horizontal_navbar";
 import VerticalNavbar from "../Vertical_Navbar/vertical_navbar";
+import InventoryDashboard from "../Dashboards/inventory_dashboard";
 
-class Inventory extends React.Component {
-  constructor(props) {
-    super(props);
+export default function SimpleBarChart() {
+  const [chartData, setChartData] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(1); // Default category ID
+  const [categoryOptions, setCategoryOptions] = useState([]); // Options for the dropdown
 
-    this.state = {
-      series: [
-        {
-          name: 'Stocks',
-          data: [2.3, 3.1, 4.0, 3.5,5.1,2.0]
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await requestApi("GET", "/api/structure/category");
+        if (response.success) {
+          // Map category data to options for the dropdown
+          const options = response.data.map((category) => ({
+            value: category.id,
+            label: category.name,
+          }));
+          setCategoryOptions(options);
+        } else {
+          console.error("Error fetching categories:", response.error);
         }
-      ],
-      options: {
-        chart: {
-          type: 'bar',
-          
-        },
-        plotOptions: {
-          bar: {
-            borderRadius: 7,
-            dataLabels: {
-              position: 'top',
-            },
-            columnWidth: '40%', 
-          },
-        },
-        dataLabels: {
-          enabled: true,
-          formatter: function (val) {
-            return val + "%";
-          },
-          offsetY: -20,
-          style: {
-            fontSize: '12px',
-            colors: ["#304758"],
-          },
-        },
-        xaxis: {
-          categories: ["10%", "20%", "30%","40%", "50%", "60%"],
-          position: 'top',
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          },
-          crosshairs: {
-            fill: {
-              type: 'gradient',
-              gradient: {
-                colorFrom: '#D8E3F0',
-                colorTo: '#BED1E6',
-                stops: [0, 100],
-                opacityFrom: 0.4,
-                opacityTo: 0.5,
-              },
-            },
-          },
-          tooltip: {
-            enabled: true,
-          },
-        },
-        yaxis: {
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          },
-          labels: {
-            show: false,
-            formatter: function (val) {
-              return val + "%";
-            },
-          },
-        },
-        title: {
-          text: 'Total Impression',
-          // floating: true,
-          // offsetY: 450,
-          // align: 'center',
-          style: {
-            color: '#444',
-          },
-        },
-        responsive: [
-          {
-            breakpoint: 600,
-            options: {
-              chart: {
-                height: 250,
-              },
-            },
-          },
-          {
-            breakpoint: 1000,
-            options: {
-              chart: {
-                height: 400,
-              },
-            },
-          },
-        ],
-      },
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
     };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await requestApi(
+          "GET",
+          `/api/stock/sales-dashboard?category=${selectedCategoryId}`
+        );
+        if (response.success) {
+          setChartData(response.data);
+        } else {
+          console.error("Error fetching data:", response.error);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [selectedCategoryId]);
+
+  const handleCategoryChange = (selectedOption) => {
+    setSelectedCategoryId(selectedOption.value);
+  };
+
+  if (!chartData) {
+    return <div>Loading...</div>;
   }
 
-  render() {
-    return (
-      <div className="dashboard-container">
-        <HorizontalNavbar />
+  const { item_names, total_quantities, available_quantity } = chartData;
 
+  return (
+    <div className="dashboard-container">
+      <HorizontalNavbar />
 
-        <div className="vandc-container">
-          <VerticalNavbar />
-          <div className="dashboard-body">
-            <div className="chart-container">
-              <ReactApexChart
-                height={"95%"}
-                width={"100%"}
-                options={this.state.options}
-                series={this.state.series}
-                type="bar"
-              />
-            </div>
+      <div className="vandc-container">
+        <VerticalNavbar />
+        <div className="dashboard-body">
+          <div className="chart-container">
+            <InventoryDashboard />
           </div>
-
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-export default Inventory;
