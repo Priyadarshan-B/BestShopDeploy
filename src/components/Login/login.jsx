@@ -89,6 +89,7 @@ const Login = () => {
                   <Passwordbox
                     type="password"
                     label="Password"
+                    size="small"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required

@@ -10,7 +10,7 @@
   justify-content: space-between;
 }
 
-.item-list-head{
+.item-list-head {
   color: var(--text);
 }
 
@@ -55,7 +55,7 @@ label {
 }
 
 .generate_button {
-  background:var(--button);
+  background: var(--button);
   border: none;
   outline: none;
   margin: 15px 5px 0px 5px;
@@ -72,7 +72,7 @@ label {
 }
 
 .generate_button:hover {
-  background-color:var(--menu-hover);
+  background-color: var(--menu-hover);
   transition: 0.6s;
 
 }
@@ -128,7 +128,7 @@ label {
 .count-size-quantity-box {
   width: 60%;
   height: 84%;
-  padding: 0px 20px 20px 20px;
+  padding: 10px;
   overflow-y: hidden;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border-radius: 7px;
@@ -149,7 +149,7 @@ label {
 }
 
 .size-and-quantity {
-  height: 25vh;
+  height: 45vh;
   overflow-y: scroll;
 }
 
@@ -390,7 +390,7 @@ label {
   /* flex-wrap: wrap; */
   align-content: center;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
 }
 
 .add-colour {
@@ -441,15 +441,17 @@ label {
 
 }
 
-.image-alt-text{
+.image-alt-text {
   color: var(--text);
 }
 
 .item-card,
 .sub-category-card,
 .brand-card {
+  position: relative;
   margin: 10px 0;
   min-width: 250px;
+  max-width: 250px;
   min-height: 100px;
   padding: 10px;
   border-radius: 8px;
@@ -458,10 +460,14 @@ label {
   display: flex;
   flex-wrap: wrap;
   align-content: center;
-  justify-content: center;
+  justify-content: space-around;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   align-items: center;
+  border: 1px solid var(--button);
+}
 
+.names {
+  text-wrap: wrap;
 }
 
 .selected-info {
@@ -491,6 +497,9 @@ label {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .selected-info {
@@ -557,8 +566,8 @@ label {
 .add-button-dialog {
   border: none;
   padding: 3px 10px;
-  background-color: rgba(255, 255, 255, 0.267);
-  color: rgb(36, 88, 202);
+  background-color: var(--button);
+  color: var(--text);
   font-weight: 500;
   border-radius: 3px;
   font-size: 18px;
@@ -567,7 +576,7 @@ label {
 }
 
 .add-button-dialog:hover {
-  background-color: #45b5ed59;
+  background-color: var(--button-hover);
 }
 
 .float-right {
@@ -579,18 +588,69 @@ input {
   margin: 5px;
 }
 
-input::file-selector-button {
-  font-weight: bold;
-  color: white;
-  padding: 7px 15px;
-  border-radius: 5px;
-  border: none;
-  background-color: #4A55A2;
+.drop-container {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 70px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px dashed #555;
+  color: #444;
+  cursor: pointer;
+  transition: background .2s ease-in-out, border .2s ease-in-out;
 }
 
-input::file-selector-button:hover {
-  background-color: #4a54a2dc;
+.drop-container:hover {
+  background: var(--menu-hover);
+  border-color: #111;
 }
+
+.drop-container:hover .drop-title {
+  color: var(--text);
+}
+
+.drop-title {
+  color: var(--text);
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  transition: color .2s ease-in-out;
+}
+
+input[type=file]::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: var(--button);
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+  font-size: 12px;
+}
+
+input[type=file]::file-selector-button:hover {
+  background: var(--button-hover);
+}
+
+.custom-file-upload {
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.or-color {
+  color: var(--text);
+}
+
+
+/* #image {
+  display: none;
+} */
 
 .form-dialog {
   display: flex;
@@ -625,4 +685,69 @@ img {
   background-color: var(--background);
   border-radius: 10px;
   border: 2px solid var(--background-1);
+}
+
+/* 
+.item-card {
+  position: relative;
+  width: 200px;
+  height: 150px;
+  background-color: #f0f0f0; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  overflow: hidden;
+} */
+
+.edit-delete {
+  position: absolute;
+  bottom: 100px;
+  right: -10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.item-card:hover .edit-delete {
+  opacity: 10;
+}
+
+.ed-icon {
+  display: flex;
+}
+
+.edit-delete-icon {
+  margin-right: 7px;
+}
+
+.ed-icon {
+  display: flex;
+  flex-direction: row;
+}
+
+.c-cards {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-delete-icon {
+  display: flex;
+  padding: 5px;
+  width: 25px;
+  border-radius: 10px;
+  background-color: var(--button);
+  justify-content: center;
+}
+
+.button-in-dialog {
+  background-color: var(--button);
+  border: none;
+  padding: 7px 20px;
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.button-in-dialog:hover {
+  background-color: var(--button-hover);
+  color: var(--text);
 }

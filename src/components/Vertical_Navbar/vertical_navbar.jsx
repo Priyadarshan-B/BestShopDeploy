@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { FaBars, FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./vertical_navbar.css";
+import Cookies from "js-cookie";
+import { FaUserCircle } from "react-icons/fa";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import CategoryIcon from "@mui/icons-material/Category";
-import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import TableChartIcon from "@mui/icons-material/TableChart";
-import InfoIcon from "@mui/icons-material/Info";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddchartIcon from "@mui/icons-material/Addchart";
 import DatasetOutlinedIcon from "@mui/icons-material/DatasetOutlined";
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 
 const VerticalNavbar = () => {
+  const username = Cookies.get("username");
+
   const [showMenu, setShowMenu] = useState(false);
   const [showMasterSubMenu, setShowMasterSubMenu] = useState(false);
   const [selectedField, setSelectedField] = useState(null);
@@ -28,10 +26,6 @@ const VerticalNavbar = () => {
   const toggleMasterSubMenu = () => {
     setShowMasterSubMenu(!showMasterSubMenu);
   };
-
-  // const handleItemClick = (field) => {
-  //   setSelectedField((prevSelected) => (prevSelected === field ? null : field));
-  // };
 
   const handleMasterClick = () => {
     toggleMasterSubMenu();
@@ -47,16 +41,38 @@ const VerticalNavbar = () => {
     setSelectedField(currentPath || "dashboard");
   }, [location.pathname]);
 
+  
+
   return (
     <div className="vertical-navbar">
       <div className="menu-icon" onClick={toggleMenu}>
         <FaBars />
       </div>
+
       <ul className={showMenu ? "nav-links show" : "nav-links"}>
+        
+        <div className="user">
+          <div className="to-hide-user">
+            <FaUserCircle style={{
+              color: "var(--button)",
+              fontSize: 25
+
+            }}
+            
+            />
+           {username && username.length > 10 ? (
+          <marquee className="profile-text">{username.toUpperCase()}</marquee>
+        ) : (
+          <div className="profile-text">{username.toUpperCase()}</div>
+        )}
+            
+          </div>
+        </div>
+        
         {/* dashboard_nav */}
 
         <li
-          className={selectedField === "dashboard" ? "selected" : ""}
+          className={selectedField === "home" ? "selected" : ""}
           onClick={() => handleNavigate("/home")}
         >
           <SpaceDashboardIcon className="navbar-icon" style={{ marginRight: "10px" }} />
@@ -130,6 +146,8 @@ const VerticalNavbar = () => {
           <EqualizerIcon className="navbar-icon" style={{ marginRight: "10px" }}/>
           <b>Stocks</b>
         </li>
+
+        
       </ul>
     </div>
   );

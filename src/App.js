@@ -15,6 +15,7 @@ import Stocks from "./components/stocks/stocks";
 import ModelDashboard from "./components/Inventory/model_dashboard";
 import Home from "./components/Home/home";
 
+
 function Protected({ children }) {
   const navigate = useNavigate();
   const [isAuth, setAuth] = useState(false);
@@ -114,7 +115,7 @@ const routes = () => (
           </Protected>
         }
       />
-
+      
       <Route path="*" element={<h1>404</h1>} />
     </Routes>
   </Router>

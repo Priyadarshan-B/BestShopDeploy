@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import { FaBell, FaUser, FaEnvelope, FaBars } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import "./horizontal_navbar.css";
 import { useNavigate } from "react-router-dom";
-import apiHost from "../../utils/api";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddchartIcon from "@mui/icons-material/Addchart";
 import DatasetOutlinedIcon from "@mui/icons-material/DatasetOutlined";
 import Cookies from "js-cookie";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { FaUserCircle } from "react-icons/fa";
-
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CustomizedSwitches from "./toggleTheme";
 import { BiSolidShoppingBags } from "react-icons/bi";
@@ -81,23 +77,23 @@ const HorizontalNavbar = () => {
   return (
     <nav className="navbar">
       <div className="menu-icon" onClick={toggleMenu}>
-        <FaBars style={{ fontSize: "20" }} />
+        <FaBars style={{ fontSize: "20", color: "#178a84" }} />
         {showMenu && (
           <div className="navbar-dropdown">
             <ul className={showMenu ? "nav-links show" : "nav-links"}>
               {/* dashboard_nav */}
               <li
-                className={selectedField === "dashboard" ? "selected" : ""}
-                onClick={() => handleNavigate("/dashboard")}
+                className={selectedField === "home" ? "selected" : ""}
+                onClick={() => handleNavigate("/home")}
               >
-                <SpaceDashboardIcon style={{ marginRight: "10px" }} />
+                <SpaceDashboardIcon style={{ marginRight: "10px", color: "#178a84" }} />
                 <b>Dashboard </b>
               </li>
               <li
                 className={selectedField === "addStock" ? "selected" : ""}
                 onClick={() => handleNavigate("/addStock")}
               >
-                <AddchartIcon style={{ marginRight: "10px" }} />
+                <AddchartIcon style={{ marginRight: "10px", color: "#178a84" }} />
                 <b>Add Stock</b>
               </li>
               {/* product_nav */}
@@ -107,7 +103,7 @@ const HorizontalNavbar = () => {
                 }
                 onClick={() => handleNavigate("/productdashboard")}
               >
-                <ShoppingCartIcon style={{ marginRight: "10px" }} />
+                <ShoppingCartIcon style={{ marginRight: "10px", color: "#178a84" }} />
                 <b>Products</b>
               </li>
               {/* master */}
@@ -146,14 +142,14 @@ const HorizontalNavbar = () => {
                 className={selectedField === "export" ? "selected" : ""}
                 onClick={() => handleNavigate("/export")}
               >
-                <DatasetOutlinedIcon style={{ marginRight: "10px" }} />
+                <DatasetOutlinedIcon style={{ marginRight: "10px", color: "#178a84" }} />
                 <b>Export</b>
               </li>
               <li
                 className={selectedField === "stocks" ? "selected" : ""}
                 onClick={() => handleNavigate("/stocks")}
               >
-                <EqualizerIcon style={{ marginRight: "10px" }} />
+                <EqualizerIcon style={{ marginRight: "10px", color: "#178a84" }} />
                 <b>Stocks</b>
               </li>
             </ul>
@@ -163,19 +159,15 @@ const HorizontalNavbar = () => {
       <div className="logo">
         <h1 className="website_name"><BiSolidShoppingBags style={{ color: "#178a84", fontSize: 35 }} />&nbsp; Best Shop</h1>
       </div>
-      
+
       <div className="icons">
-        <FaUserCircle style={{
-          color: "#178a84",
-          fontSize:35
-        }}/>
-      <h3 className="profile-text">{Cookies.get("username").toUpperCase()}</h3>
+        
         <CustomizedSwitches />
         <Popup
           className="popup-container"
           trigger={
-          
-              <SettingsIcon style={{ color: "#178a84", fontSize: 35 , margin:7, cursor:"pointer"}} />
+
+            <SettingsIcon style={{ color: "#178a84", fontSize: 35, margin: 7, cursor: "pointer" }} />
           }
           position="bottom right"
         >

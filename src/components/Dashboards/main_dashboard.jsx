@@ -3,6 +3,7 @@ import ReactApexChart from "react-apexcharts";
 import "../Stock_Dashboard/stock_dashboard.css";
 import requestApi from "../../utils/axios";
 
+
 const StockDashboard = () => {
   const [chartData, setChartData] = useState({
     series: [
@@ -39,10 +40,17 @@ const StockDashboard = () => {
         categories: ["Less Than 30 Days", "30 to 180 days", "180 to 365 days"],
 
         labels: {
+          style: {
+            colors: 'var(--text)'
+          },
           formatter: function (val) {
             return val;
           },
         },
+        style: {
+          colors: 'var(--text)'
+        },
+
       },
       yaxis: [
         { show: false },
@@ -65,13 +73,18 @@ const StockDashboard = () => {
           color: "var(--text)",
         },
       },
+      legend: {
+        labels: {
+          colors: 'var(--text)'
+        }
+      }
     },
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await requestApi("GET", `/api/stock/dashboard-data`);
+        const response = await requestApi("GET", "/api/stock/dashboard-data");
 
         if (!response || !response.success) {
           throw new Error("Failed to fetch data");
@@ -106,20 +119,27 @@ const StockDashboard = () => {
           ...prevChartData,
           series: updatedSeries,
         }));
-      } catch (error) {}
+      } catch (error) { }
     };
 
     fetchData();
   }, []);
 
   return (
-    <ReactApexChart
-      height={"95%"}
-      width={"100%"}
-      options={chartData.options}
-      series={chartData.series}
-      type="bar"
-    />
+    <div style={{
+      height: "100%",
+      width: "95%",
+      padding: "10px"
+
+    }}>
+      <ReactApexChart
+        height={"95%"}
+        width={"100%"}
+        options={chartData.options}
+        series={chartData.series}
+        type="bar"
+      />
+    </div>
   );
 };
 
